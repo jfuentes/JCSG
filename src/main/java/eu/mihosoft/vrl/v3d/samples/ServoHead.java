@@ -106,6 +106,7 @@ public class ServoHead {
 
     public CSG servoHeadFemale() {
 
+
         CSG cyl1 = new Cylinder(headDiameter / 2 + headThickness, headHeight + 1, 16).toCSG();
 //        cyl1 = cyl1.transformed(Transform.unity().translateZ(0.1));
 
@@ -119,12 +120,14 @@ public class ServoHead {
     }
     
     
-        public static void main(String[] args) throws IOException {
-        
+    public static void main(String[] args) throws IOException {
+        long start = System.currentTimeMillis();
         System.out.println("RUNNING");
 
         FileUtil.write(Paths.get("servo-head-female.stl"), new ServoHead().servoHeadFemale().toStlString());
-         FileUtil.write(Paths.get("servo-head-male.stl"), new ServoHead().servoHeadMale().toStlString());
+        FileUtil.write(Paths.get("servo-head-male.stl"), new ServoHead().servoHeadMale().toStlString());
+        long stop = System.currentTimeMillis();
+        System.out.println(stop-start);
 
     }
 }

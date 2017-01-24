@@ -35,8 +35,12 @@ package eu.mihosoft.vrl.v3d;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Holds a node in a BSP tree. A BSP tree is built from a collection of polygons
@@ -50,19 +54,19 @@ final class Node {
     /**
      * Polygons.
      */
-    private List<Polygon> polygons;
+    public List<Polygon> polygons;
     /**
      * Plane used for BSP.
      */
-    private Plane plane;
+    public Plane plane;
     /**
      * Polygons in front of the plane.
      */
-    private Node front;
+    public Node front;
     /**
      * Polygons in back of the plane.
      */
-    private Node back;
+    public Node back;
 
     /**
      * Constructor.
@@ -245,17 +249,28 @@ final class Node {
                     polygon, this.polygons, this.polygons, frontP, backP);
         });
 
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
+        AtomicInteger count = new AtomicInteger(0);
         if (frontP.size() > 0) {
             if (this.front == null) {
                 this.front = new Node();
             }
-            this.front.build(frontP);
+            NodeTask task1 = new NodeTask(executor, frontP, this.front, count);
+            executor.execute(task1);
+            count.addAndGet(1);
+            //this.front.build(frontP);
         }
         if (backP.size() > 0) {
             if (this.back == null) {
                 this.back = new Node();
             }
-            this.back.build(backP);
+            NodeTask task2 = new NodeTask(executor, backP, this.back, count);
+            executor.execute(task2);
+            count.addAndGet(1);
+            //this.back.build(backP);
         }
+        while(count.get()>0);
+
+        executor.shutdown();
     }
 }
