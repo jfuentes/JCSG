@@ -121,13 +121,10 @@ public class ServoHead {
     
     
     public static void main(String[] args) throws IOException {
-        long start = System.currentTimeMillis();
         System.out.println("RUNNING");
 
         FileUtil.write(Paths.get("servo-head-female.stl"), new ServoHead().servoHeadFemale().toStlString());
         FileUtil.write(Paths.get("servo-head-male.stl"), new ServoHead().servoHeadMale().toStlString());
-        long stop = System.currentTimeMillis();
-        System.out.println(stop-start);
 
     }
 }

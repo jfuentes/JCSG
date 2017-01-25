@@ -249,15 +249,17 @@ final class Node {
                     polygon, this.polygons, this.polygons, frontP, backP);
         });
 
-        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
+        // Create thread pool with the total of cores available
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(Main.NUMBER_CORES);
         AtomicInteger count = new AtomicInteger(0);
         if (frontP.size() > 0) {
             if (this.front == null) {
                 this.front = new Node();
             }
             NodeTask task1 = new NodeTask(executor, frontP, this.front, count);
-            executor.execute(task1);
             count.addAndGet(1);
+            executor.execute(task1);
+
             //this.front.build(frontP);
         }
         if (backP.size() > 0) {
@@ -265,12 +267,12 @@ final class Node {
                 this.back = new Node();
             }
             NodeTask task2 = new NodeTask(executor, backP, this.back, count);
-            executor.execute(task2);
             count.addAndGet(1);
+            executor.execute(task2);
+
             //this.back.build(backP);
         }
         while(count.get()>0);
-
         executor.shutdown();
     }
 }

@@ -44,9 +44,11 @@ import javafx.scene.paint.Color;
  * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
  */
 public class Main {
+    static final int NUMBER_CORES = Runtime.getRuntime().availableProcessors();
 
     public static void main(String[] args) throws IOException {
-
+        System.out.println("Running with "+NUMBER_CORES+" cores");
+        long start = System.currentTimeMillis();
         // we use cube and sphere as base geometries
         CSG cube = new Cube(2).toCSG().color(Color.RED);
         CSG sphere = new Sphere(1.25).toCSG().color(Color.BLUE);
@@ -72,6 +74,8 @@ public class Main {
         FileUtil.write(Paths.get("sample.stl"), union.toStlString());
         
         union.toObj().toFiles(Paths.get("sample-color.obj"));
+        long stop = System.currentTimeMillis();
+        System.out.println(stop-start);
 
     }
 }

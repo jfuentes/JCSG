@@ -45,8 +45,9 @@ public class NodeTask implements Runnable{
                 currentNode.front = new Node();
             }
             NodeTask task1 = new NodeTask(executor, frontP, currentNode.front, count);
-            executor.execute(task1);
             count.addAndGet(1);
+            executor.execute(task1);
+
             //this.front.build(frontP);
         }
         if (backP.size() > 0) {
@@ -54,15 +55,12 @@ public class NodeTask implements Runnable{
                 currentNode.back = new Node();
             }
             NodeTask task2 = new NodeTask(executor, backP, currentNode.back, count);
-            executor.execute(task2);
             count.addAndGet(1);
+            executor.execute(task2);
+
             //this.back.build(backP);
         }
 
-       // if(executor.getTaskCount()==0){
-       //     System.out.println("shutfown");
-       //     executor.shutdown();
-       // }
         count.decrementAndGet();
 
 
